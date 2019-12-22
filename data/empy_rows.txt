@@ -1,0 +1,19 @@
+SQBmeaned, square of the mean years of education of adults (>=18) in the household
+5
+remove records
+
+meaneduc, average years of education for adults (18+)
+5
+remove records
+
+rez_esc, Years behind in school
+7928
+cut
+
+v18q1, number of tablets household owns
+7342
+insert zeros
+
+v2a1, Monthly rent payment
+6860
+mean/mode
