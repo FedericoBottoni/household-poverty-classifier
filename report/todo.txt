@@ -12,3 +12,6 @@ GROUPS
 - instlevel -> keep order <1 ... 9>
 - tipovivi -> keep order <1, 2, 3, 4, 5> + others
 - area -> 0 if rural, 1 if urban
+
+instlevel has 3 rows without '1'
+lugar?

@@ -23,7 +23,11 @@ def join_columns(raw_train, col_names, col_map, new_label, order, new_oth_names=
         row = [raw_train[i,s] for s in col_group]
         row = np.array(row)
         #finding selected cell content and type
-        index, = np.where(row == "1")[0]
+        try:
+            index, = np.where(row == "1")[0]
+        except:
+            print("categorical 1 not found for variable: " + new_label)
+            index = 0
         index_type = col_map[index]
         #if type is not categorical
         if(index_type != "c"):
