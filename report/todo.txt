@@ -14,4 +14,3 @@ GROUPS
 - area -> 0 if rural, 1 if urban
 
 instlevel has 3 rows without '1'
-lugar?

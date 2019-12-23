@@ -18,6 +18,7 @@ def join_columns(raw_train, col_names, col_map, new_label, order, new_oth_names=
     for i in range(len(col_names)):
         col_group[i], = np.where(raw_train[0,:] == col_names[i])[0]
     #updating raw_train
+    not_one = list()
     for i in range(1, raw_train.shape[0]):
         #building categorical row
         row = [raw_train[i,s] for s in col_group]
@@ -25,8 +26,11 @@ def join_columns(raw_train, col_names, col_map, new_label, order, new_oth_names=
         #finding selected cell content and type
         try:
             index, = np.where(row == "1")[0]
+        #if broken row without ones
         except:
             print("categorical 1 not found for variable: " + new_label)
+            #appending index for later remove
+            not_one.append(i)
             index = 0
         index_type = col_map[index]
         #if type is not categorical
@@ -37,6 +41,14 @@ def join_columns(raw_train, col_names, col_map, new_label, order, new_oth_names=
         else:
             #update new int column
             raw_train[i,new_int_col_index] = str(order[index])
+    #removing broken rows
+    not_one = np.sort(np.array(not_one))
+    not_one_dim = not_one.shape[0]
+    i = 0
+    while(i<not_one_dim):
+        raw_train = np.delete(raw_train, not_one[i], axis=0)
+        not_one -= 1
+        i += 1
     #removing old columns
     #sorting index list of features columns in order to simplify the iterative removing process
     col_group = np.sort(col_group)
