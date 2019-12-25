@@ -1,6 +1,7 @@
 import numpy as np
 
 cols_deleted = ['Id', 'r4h3', 'r4m3', 'r4t1', 'r4t2', 'r4t3', 'rez_esc', 'elimbasu5', 'idhogar', 'hogar_total', 'mobilephone']
+cols_parsed = ['dependency', 'edjefe', 'edjefa']
 
 def clean_data(raw):
     cleaned_data = raw.copy()
@@ -16,6 +17,15 @@ def clean_data(raw):
     for i in range(1, cleaned_data.shape[0]):
         if(cleaned_data[i,j] == ""):
             cleaned_data[i,j] = "0"
+    
+    # fixing yes,no -> 1,0
+    for col in cols_parsed:
+        j, = np.where(cleaned_data[0,:] == col)[0]
+        for i in range(1, cleaned_data.shape[0]):
+            if(cleaned_data[i,j] == "yes"):
+                cleaned_data[i,j] = 1
+            elif(cleaned_data[i,j] == "no"):
+                cleaned_data[i,j] = 0
 
     # Removing columns
     for col in cols_deleted:
