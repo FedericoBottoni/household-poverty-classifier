@@ -1,28 +1,36 @@
 import numpy as np
 
-def clean_data(raw_train):
+cols_deleted = ['Id', 'r4h3', 'r4m3', 'r4t1', 'r4t2', 'r4t3', 'rez_esc', 'elimbasu5', 'idhogar', 'hogar_total', 'mobilephone']
+
+def clean_data(raw):
+    cleaned_data = raw.copy()
+
     #mean-filling variable: v2a1, Monthly rent payment
-    j, = np.where(raw_train[0,:] == "v2a1")[0]
-    mean = np.around(np.mean([float(x) for x in raw_train[1:,j] if x!=""]), decimals=1)
-    for i in range(1, raw_train.shape[0]):
-        if(raw_train[i,j] == ""):
-            raw_train[i,j] = str(mean)
+    j, = np.where(cleaned_data[0,:] == "v2a1")[0]
+    mean = np.around(np.mean([float(x) for x in cleaned_data[1:,j] if x!=""]), decimals=1)
+    for i in range(1, cleaned_data.shape[0]):
+        if(cleaned_data[i,j] == ""):
+            cleaned_data[i,j] = str(mean)
     #0-filling for column: v18q1, number of tablets household owns
-    j, = np.where(raw_train[0,:] == "v18q1")[0]
-    for i in range(1, raw_train.shape[0]):
-        if(raw_train[i,j] == ""):
-            raw_train[i,j] = "0"
-    #removing column: rez_esc, Years behind in school
-    j, = np.where(raw_train[0,:] == "rez_esc")[0]
-    raw_train = np.delete(raw_train, j, axis=1)
-    #removing rows with empty variable: meaneduc / SQBmeaned
-    j, = np.where(raw_train[0,:] == "meaneduc")[0]
-    raw_train_rows_dim = raw_train.shape[0]
+    j, = np.where(cleaned_data[0,:] == "v18q1")[0]
+    for i in range(1, cleaned_data.shape[0]):
+        if(cleaned_data[i,j] == ""):
+            cleaned_data[i,j] = "0"
+
+    # Removing columns
+    for col in cols_deleted:
+        j, = np.where(cleaned_data[0,:] == col)[0]
+        cleaned_data = np.delete(cleaned_data, j, axis=1)
+
+    # Removing rows
+    # removing rows with empty variable: meaneduc / SQBmeaned
+    j, = np.where(cleaned_data[0,:] == "meaneduc")[0]
+    cleaned_data_rows_dim = cleaned_data.shape[0]
     i = 0
-    while(i<raw_train_rows_dim):
-        if(raw_train[i,j] == ""):
-            raw_train = np.delete(raw_train, i, axis=0)
-            raw_train_rows_dim -= 1
+    while(i<cleaned_data_rows_dim):
+        if(cleaned_data[i,j] == ""):
+            cleaned_data = np.delete(cleaned_data, i, axis=0)
+            cleaned_data_rows_dim -= 1
         else:
             i += 1
-    return raw_train
+    return cleaned_data

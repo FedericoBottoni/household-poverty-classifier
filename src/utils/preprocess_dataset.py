@@ -21,7 +21,7 @@ def preprocess_data(data_name):
     raw = join_columns(raw, ["sanitario1", "sanitario2", "sanitario3", "sanitario5", "sanitario6"], ["c","c","c","c","o1"], "sanitario", [1,2,3,4], {"o1":"sanioth"})
     raw = join_columns(raw, ["energcocinar1", "energcocinar2", "energcocinar3", "energcocinar4"], ["c","c","c","c"], "energcocinar", [1,4,2,3])
     raw = join_columns(raw, ["elimbasu1", "elimbasu2", "elimbasu3", "elimbasu4", "elimbasu6"], ["c","c","c","c","o1"], "elimbasu", [4,3,2,1], {"o1":"elimoth"})
-    raw = np.delete(raw, np.where(raw[0,:] == "elimbasu5")[0][0], axis=1)
+    #raw = np.delete(raw, np.where(raw[0,:] == "elimbasu5")[0][0], axis=1)
     raw = join_columns(raw, ["epared1", "epared2", "epared3"], ["c","c","c"], "epared", [1,2,3])
     raw = join_columns(raw, ["etecho1", "etecho2", "etecho3"], ["c","c","c"], "etecho", [1,2,3])
     raw = join_columns(raw, ["eviv1", "eviv2", "eviv3"], ["c","c","c"], "eviv", [1,2,3])
