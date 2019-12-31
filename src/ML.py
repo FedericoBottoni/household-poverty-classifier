@@ -22,7 +22,7 @@ def preprocess_labels(labels, encoder=None, categorical=True):
         y = np_utils.to_categorical(y)
     return y, encoder
 
-def prepare_data():
+def prepare_data(shuffle=False):
     x_train = list()
     with open("./data/train.csv") as f:
         x_reader = csv.reader(f, delimiter=";")
@@ -43,12 +43,13 @@ def prepare_data():
 
     x_test = x_test[1:,:].astype(np.float32)
 
-    rng_state = np.random.get_state()
-    np.random.shuffle(x_train)
-    np.random.set_state(rng_state)
-    np.random.shuffle(y_train)
-    rng_state = np.random.get_state()
-    np.random.shuffle(x_test)
+    if (shuffle):
+        rng_state = np.random.get_state()
+        np.random.shuffle(x_train)
+        np.random.set_state(rng_state)
+        np.random.shuffle(y_train)
+        rng_state = np.random.get_state()
+        np.random.shuffle(x_test)
 
     x_train, scaler = preprocess_data(x_train)
     y_train, encoder = preprocess_labels(y_train)
@@ -58,7 +59,7 @@ def prepare_data():
     return x_train, y_train, x_test
 
 def train():
-    x_train, y_train, x_test = prepare_data()
+    x_train, y_train, x_test = prepare_data(shuffle=True)
 
     dims = x_train.shape[1]
     nb_classes = y_train.shape[1]
