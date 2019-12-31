@@ -2,7 +2,7 @@ import numpy as np
 import csv as csv
 from clean_data import clean_data
 from join_columns import join_columns
-
+from fix_decimals import add_int, cut_decimals
 
 def preprocess_dataset():
     preprocess_data('train')
@@ -30,6 +30,9 @@ def preprocess_data(data_name):
     raw = join_columns(raw, ["instlevel1", "instlevel2", "instlevel3", "instlevel4", "instlevel5", "instlevel6", "instlevel7", "instlevel8", "instlevel9"], ["c","c","c","c","c","c","c","c","c"], "instlevel", [1,2,3,4,5,6,7,8,9])
     raw = join_columns(raw, ["tipovivi1", "tipovivi2", "tipovivi3", "tipovivi4", "tipovivi5"], ["c","c","c","c","o1"], "tipovivi", [1,2,3,4], {"o1":"tipooth"})
     raw = join_columns(raw, ["area2", "area1"], ["c","c"], "area", [0,1])
+
+    raw = add_int(raw, 0)
+    raw = cut_decimals(raw, 2)
 
     #saving new dataset
     print('exporting ' + data_name + '.csv')
