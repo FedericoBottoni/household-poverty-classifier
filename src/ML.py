@@ -65,13 +65,13 @@ def train():
     nb_classes = y_train.shape[1]
 
     model = Sequential()
-    model.add(Dense(64, input_shape=(dims,), activation = "relu"))
+    model.add(Dense(128, input_shape=(dims,), activation = "relu"))
+    model.add(Dense(64, activation = "relu"))
     model.add(Dense(32, activation = "relu"))
-    model.add(Dense(16, activation = "relu"))
     model.add(Dense(nb_classes, activation = "softmax"))
 
-    model.compile(optimizer='sgd', loss='mean_squared_error', metrics=['accuracy'])
+    model.compile(optimizer='adam', loss='categorical_hinge', metrics=['accuracy'])
 
     n_epochs = 80
 
-    network_history = model.fit(x_train, y_train, batch_size=128, epochs=n_epochs, verbose=1, validation_split=0.2)
+    network_history = model.fit(x_train, y_train, batch_size=256, epochs=n_epochs, verbose=1, validation_split=0.2)
