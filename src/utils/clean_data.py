@@ -33,7 +33,7 @@ def clean_data(raw):
         cleaned_data = np.delete(cleaned_data, j, axis=1)
 
     # Removing rows
-    # removing rows with empty variable: meaneduc / SQBmeaned
+    # removing rows with empty variable: meaneduc / SQBmeaned (step not repeated for SQBmeaned since the empty rows for both correspond)
     j, = np.where(cleaned_data[0,:] == "meaneduc")[0]
     cleaned_data_rows_dim = cleaned_data.shape[0]
     i = 0
