@@ -31,7 +31,13 @@ python auto_ml.py
 You can train the network and evaluate the metrics :
 
 ```bash
-python train.py
+python  nnscore.py ./data/train.csv
+```
+
+You can train the network from data with some features encoded manually and evaluate the metrics :
+
+```bash
+python  nnscore.py ./data/train_enc.csv
 ```
 
 ## Authors
