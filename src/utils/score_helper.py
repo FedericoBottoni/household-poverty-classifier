@@ -21,7 +21,6 @@ def score_cv(xs, ys, model_evaluate, verbose=False):
     return 
     
 def leave1out_cv(xs, ys, model_evaluate, iter=100, verbose=False):
-    accs = [None] * iter
     nouts = np.random.randint(0,len(ys),iter)
     correct = 0
     for i in range(1, iter):
@@ -31,13 +30,11 @@ def leave1out_cv(xs, ys, model_evaluate, iter=100, verbose=False):
         y_test = y_train.pop(nouts[i])
 
         acc = model_evaluate(np.array(x_train), np.array(y_train), np.array([x_test]), np.array([y_test]))
-        np.append(accs, acc)
-        accs[i] = acc
+        correct = correct + acc
         if verbose:
-            correct = correct + acc
             print('CV:', i, '/', iter, '- score:', correct, '/', i)
         i=i+1
-    mean_accs = np.array(accs).mean()
+    mean_accs = correct/iter
     if verbose:
         print('CV mean acc:', mean_accs)
     return mean_accs

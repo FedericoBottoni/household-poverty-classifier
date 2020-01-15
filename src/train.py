@@ -92,9 +92,6 @@ def evaluate_acc(x_train, y_train, x_test, y_test, encoder=None):
     return accuracy_score(labels, y_test)
 
 def score(inp_path):
-    
-    print('Evaluating leave-1-out-score')
-    print(leave1out_cv_score(inp_path))
 
     x_train, y_train, x_test, y_test, _ = prepare_data(inp_path, split_size=0.1, shuffle=True)
     model = train(x_train, y_train, x_test, y_test)
@@ -103,8 +100,11 @@ def score(inp_path):
     labels=model.predict_classes(x_test, batch_size=32, verbose=1)
     print("Accuracy: ", accuracy_score(labels, y_test))
     print(classification_report(labels, y_test))
+
+    print('Evaluating leave-1-out-score')
+    print(leave1out_cv_score(inp_path))
     
 
 def leave1out_cv_score(inp_path):
     xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True)
-    return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=100, verbose=True)
+    return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=100, verbose=False)
