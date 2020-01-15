@@ -13,6 +13,7 @@ from keras.layers import Dense, Activation, Dropout
 from sklearn.model_selection import KFold
 from sklearn.metrics import accuracy_score
 from train import prepare_data, preprocess_labels
+from score_helper import score_cv
 
 def gproc(evaluate_network, params, acquisition_function='ExpectedImprovement'):
     print('init Gaussian process')
@@ -67,24 +68,9 @@ def evaluate_nn(x_train, y_train, x_test, y_test, learning_rate, beta_1, beta_2,
     acc = accuracy_score(processed, y_test)
     return acc
 
-
 def evaluate_cv(inp_path, learning_rate, beta_1, beta_2):
-    kfolds = 10
     xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True)
-    kf = KFold(n_splits=kfolds)
-    accs = [None] * kfolds
-    i=0
-    for train_index, test_index in kf.split(xs):
-        x_train, x_test = xs[train_index], xs[test_index]
-        y_train, y_test = ys[train_index], ys[test_index]
-        acc = evaluate_nn(x_train, y_train, x_test, y_test, learning_rate, beta_1, beta_2, encoder)
-        np.append(accs, acc)
-        accs[i] = acc
-        i=i+1
-        #print('CV:', i, '/', kfolds, ' acc', acc)
-    mean_accs = np.array(accs).mean()
-    #print('CV mean acc:', mean_accs)
-    return mean_accs
+    return score_cv(xs, ys, partial(evaluate_nn, learning_rate=learning_rate, beta_1=beta_1, beta_2=beta_2, encoder=encoder), verbose=True)
 
 def sample_hps(input_params):
     best_params, best_acc = None, 0
