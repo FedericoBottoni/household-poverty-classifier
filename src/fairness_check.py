@@ -39,21 +39,12 @@ def prepare_data_fairness(inp_path, fields_list=[], split_size=0.25, shuffle=Fal
             x.append(row)
     x = np.array(x)
     data_dictionary={}
-    element_distibution_dictionary={"count":0, "extreme_poverty_count":0, "moderate_povery_count":0, "vulnerable_households_count":0, "non_vulnerable_households_count":0}
     index_list=list()
-    #print(fields_list)
     for target in fields_list:
-        #print(target)
-        #print(type(target))
         index_list.append(np.where(x[0,:] == str(target))[0][0])
         data_dictionary[target]={"count":0, "extreme_poverty_count":0, "moderate_povery_count":0, "vulnerable_households_count":0, "non_vulnerable_households_count":0}
 
-    
-    #print(type(x))
-    #print(x[0,66:68]) 
-
     y_index = np.where(x[0,:] == "Target")[0][0]
-    #Remove the first row and shuffle
     x=x[1:,:]
     if (shuffle):
         x = shuffle(x[:,])
@@ -82,10 +73,9 @@ def prepare_data_fairness(inp_path, fields_list=[], split_size=0.25, shuffle=Fal
                             if(row[y_index].astype(int)==4):
                                 data_dictionary[fields_list[i]]["non_vulnerable_households_count"]+=1
             i+=1
-    #print(data_distribution)
-    #print(data_dictionary)
     return data_dictionary
 
+"""
 fields_list=list()
 fields_list.append("male")
 fields_list.append("female")
@@ -105,3 +95,4 @@ for data in data_dictionary:
     print(data)
     print(data_dictionary[data])
     print("--------------------------------------------------------------------------------------------------------------------------------------------------")
+"""
