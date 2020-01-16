@@ -9,6 +9,7 @@ from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
 from score_helper import leave1out_cv
+from collections import defaultdict
 from imblearn.over_sampling import SMOTE
 
 def shuffle_dataset(xs, ys):
@@ -32,7 +33,7 @@ def preprocess_labels(labels, encoder=None, categorical=True):
         y = np_utils.to_categorical(y, num_classes=4)
     return y, encoder
 
-def prepare_data(inp_path, split_size=0.25, shuffle=False, oversize=True):
+def prepare_data(inp_path, split_size=0.25, shuffle=False, oversize=True, target_ratio=0.8):
     x = list()
     with open(inp_path) as f:
         x_reader = csv.reader(f, delimiter=";")
@@ -44,11 +45,30 @@ def prepare_data(inp_path, split_size=0.25, shuffle=False, oversize=True):
     y = x[1:,y_index].astype(np.float32)-1 #-1 is used to scale the target column to 0-base
     x = np.delete(x, y_index, axis=1)[1:,:].astype(np.float32)
 
-    if (shuffle):
-       x, y = shuffle_dataset(x, y)
-
     x, _ = preprocess_data(x)
 
+    if(oversize):
+        y = y.astype(np.int32)
+        count_occ = defaultdict(int)
+        for i in y:
+            count_occ[i] += 1
+        max_occ=(0,0)
+        for i in count_occ.items():
+            if(i[1]>max_occ[1]):
+                max_occ = i
+        sampling_dict = dict()
+        for i in count_occ.items():
+            if(i[0]!=max_occ[0] and i[1]<round(max_occ[1]*target_ratio)):
+                sampling_dict[i[0]]=round(max_occ[1]*target_ratio)
+            else:
+                sampling_dict[i[0]]=max_occ[1]
+        sm = SMOTE(random_state = 0, sampling_strategy = sampling_dict)
+        x, y = sm.fit_sample(x, y)
+        y = y.astype(np.float32)
+    
+    if (shuffle):
+       x, y = shuffle_dataset(x, y)
+    
     if split_size == 1:
         x_train = x
         x_test = None
@@ -63,11 +83,6 @@ def prepare_data(inp_path, split_size=0.25, shuffle=False, oversize=True):
         y_test = y[border:]
 
     y_train, encoder = preprocess_labels(y_train)
-
-    if(oversize):
-        sm = SMOTE(random_state = 0, sampling_strategy = 0.9)
-        x_train, y_train = sm.fit_sample(x_train, y_train)
-        y_train, _ = preprocess_labels(y_train)
 
     return x_train, y_train, x_test, y_test, encoder
 
@@ -99,7 +114,7 @@ def evaluate_acc(x_train, y_train, x_test, y_test, encoder=None):
 
 def score(inp_path):
 
-    x_train, y_train, x_test, y_test, _ = prepare_data(inp_path, split_size=0.1, shuffle=True, oversize=True)
+    x_train, y_train, x_test, y_test, _ = prepare_data(inp_path, split_size=0.1, shuffle=True, oversize=True, target_ratio=0.8)
     model = train(x_train, y_train, x_test, y_test)
     model.summary()
 
@@ -112,5 +127,5 @@ def score(inp_path):
     
 
 def leave1out_cv_score(inp_path):
-    xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True, oversize=True)
+    xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True, oversize=True, target_ratio=0.8)
     return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=100, verbose=False)
