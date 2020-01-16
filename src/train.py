@@ -9,6 +9,7 @@ from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Dense, Activation, Dropout
 from score_helper import leave1out_cv
+from imblearn.over_sampling import SMOTE
 
 def shuffle_dataset(xs, ys):
     idx = np.random.permutation(xs.shape[0])
@@ -31,7 +32,7 @@ def preprocess_labels(labels, encoder=None, categorical=True):
         y = np_utils.to_categorical(y, num_classes=4)
     return y, encoder
 
-def prepare_data(inp_path, split_size=0.25, shuffle=False):
+def prepare_data(inp_path, split_size=0.25, shuffle=False, oversize=True):
     x = list()
     with open(inp_path) as f:
         x_reader = csv.reader(f, delimiter=";")
@@ -63,6 +64,11 @@ def prepare_data(inp_path, split_size=0.25, shuffle=False):
 
     y_train, encoder = preprocess_labels(y_train)
 
+    if(oversize):
+        sm = SMOTE(random_state = 0, sampling_strategy = 0.9)
+        x_train, y_train = sm.fit_sample(x_train, y_train)
+        y_train, _ = preprocess_labels(y_train)
+
     return x_train, y_train, x_test, y_test, encoder
 
 def train(x_train, y_train, x_test, y_test, verbose=1):
@@ -93,7 +99,7 @@ def evaluate_acc(x_train, y_train, x_test, y_test, encoder=None):
 
 def score(inp_path):
 
-    x_train, y_train, x_test, y_test, _ = prepare_data(inp_path, split_size=0.1, shuffle=True)
+    x_train, y_train, x_test, y_test, _ = prepare_data(inp_path, split_size=0.1, shuffle=True, oversize=True)
     model = train(x_train, y_train, x_test, y_test)
     model.summary()
 
@@ -106,5 +112,5 @@ def score(inp_path):
     
 
 def leave1out_cv_score(inp_path):
-    xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True)
+    xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True, oversize=True)
     return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=100, verbose=False)
