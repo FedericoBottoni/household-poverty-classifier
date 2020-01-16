@@ -18,7 +18,7 @@ def score_cv(xs, ys, model_evaluate, verbose=False):
     mean_accs = np.array(accs).mean()
     if verbose:
         print('CV mean acc:', mean_accs)
-    return 
+    return mean_accs
     
 def leave1out_cv(xs, ys, model_evaluate, iter=100, verbose=False):
     nouts = np.random.randint(0,len(ys),iter)
