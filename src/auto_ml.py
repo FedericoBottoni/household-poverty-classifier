@@ -69,7 +69,7 @@ def evaluate_nn(x_train, y_train, x_test, y_test, learning_rate, beta_1, beta_2,
     return acc
 
 def evaluate_cv(inp_path, learning_rate, beta_1, beta_2, n1, n2, n3):
-    xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True)
+    xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True, oversize=True, target_ratio=0.8)
     return score_cv(xs, ys, partial(evaluate_nn, learning_rate=learning_rate, beta_1=beta_1, beta_2=beta_2, n1=n1, n2=n2, n3=n3, encoder=encoder), verbose=False)
 
 def sample_hps(input_params):
