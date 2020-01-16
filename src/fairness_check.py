@@ -30,108 +30,78 @@ def preprocess_labels(labels, encoder=None, categorical=True):
         y = np_utils.to_categorical(y, num_classes=4)
     return y, encoder
 
-def prepare_data_fairness(inp_path, split_size=0.25, shuffle=False):
+def prepare_data_fairness(inp_path, fields_list=[], split_size=0.25, shuffle=False):
+    
     x = list()
     with open(inp_path) as f:
         x_reader = csv.reader(f, delimiter=";")
         for row in x_reader:
             x.append(row)
     x = np.array(x)
+    data_dictionary={}
+    element_distibution_dictionary={"count":0, "extreme_poverty_count":0, "moderate_povery_count":0, "vulnerable_households_count":0, "non_vulnerable_households_count":0}
+    index_list=list()
+    #print(fields_list)
+    for target in fields_list:
+        #print(target)
+        #print(type(target))
+        index_list.append(np.where(x[0,:] == str(target))[0][0])
+        data_dictionary[target]={"count":0, "extreme_poverty_count":0, "moderate_povery_count":0, "vulnerable_households_count":0, "non_vulnerable_households_count":0}
+
+    
     #print(type(x))
     #print(x[0,66:68]) 
+
     y_index = np.where(x[0,:] == "Target")[0][0]
-    print(y_index)
+    #Remove the first row and shuffle
     x=x[1:,:]
     if (shuffle):
-        x = shuffle(x[:,]) #Remove the first row and shuffle 
-    
-    genders=x[:,66:68]
-    y_test_male=list()
-    y_test_female=list()
-    male1_count=0
-    male2_count=0
-    male3_count=0
-    male4_count=0
-    female1_count=0
-    female2_count=0
-    female3_count=0
-    female4_count=0
-    c=0
-    for  row in genders:
-        
-        if(row[1].astype(int)==0):
-            y_test_male.append(c)
-            #print(x[c,131])
-            if(x[c,131].astype(int)==1):
-                male1_count+=1
-            else:
-                if(x[c,131].astype(int)==2):
-                    male2_count+=1
+        x = shuffle(x[:,])
+
+    data_distribution=list()
+    for element in index_list:
+        data_distribution.append(0)
+
+    data_distribution= np.array(data_distribution)
+    for  row in x:
+        i=0
+        for index in index_list:
+            if(row[index.astype(int)].astype(int)==1):
+                data_distribution[i]+=1
+                data_dictionary[fields_list[i]]["count"]+=1
+
+                if(row[y_index].astype(int)==1):
+                    data_dictionary[fields_list[i]]["extreme_poverty_count"]+=1
                 else:
-                    if(x[c,131].astype(int)==3):
-                        male3_count+=1
+                    if(row[y_index].astype(int)==2):
+                        data_dictionary[fields_list[i]]["moderate_povery_count"]+=1
                     else:
-                        male4_count+=1
-        else:
-            y_test_female.append(c)
-            if(x[c,131].astype(int)==1):
-                female1_count+=1
-            else:
-                if(x[c,131].astype(int)==2):
-                    female2_count+=1
-                else:
-                    if(x[c,131].astype(int)==3):
-                        female3_count+=1
-                    else:
-                        female4_count+=1 
-        c+=1
-    y_test_female=np.array(y_test_female)
-    y_test_male=np.array(y_test_male)
-    print("Male stats")
-    print("Male count:")
-    print(y_test_male.size)
-    print("extreme poverty male count:")
-    print(male1_count)
-    print("moderate poverty male count:")    
-    print(male2_count)
-    print("vulnerable households male count:")
-    print(male3_count)
-    print(" non vulnerable households male count:")
-    print(male4_count)    
-    print("--------------------------")
-    print("Male stats")
-    print("Male count:")
-    print(y_test_female.size)
-    print("extreme poverty female count:")
-    print(female1_count)
-    print("moderate poverty female count:") 
-    print(female2_count)
-    print("vulnerable households female count:")
-    print(female3_count)
-    print(" non vulnerable households female count:")
-    print(female4_count)
-    #print(x[y_test_male[0]])
+                        if(row[y_index].astype(int)==3):
+                            data_dictionary[fields_list[i]]["vulnerable_households_count"]+=1
+                        else:
+                            if(row[y_index].astype(int)==4):
+                                data_dictionary[fields_list[i]]["non_vulnerable_households_count"]+=1
+            i+=1
+    #print(data_distribution)
+    #print(data_dictionary)
+    return data_dictionary
 
-    y = x[1:,y_index].astype(np.float32)-1 #-1 is used to scale the target column to 0-base
-    x = np.delete(x, y_index, axis=1)[1:,:].astype(np.float32)
-    x, _ = preprocess_data(x)
-    if split_size == 1:
-        x_train = x
-        x_test = None
-        y_train = y
-        y_test = None
-    else: 
-        r_size = x.shape[0]
-        border = math.floor(r_size*(1-split_size))
-        x_train = x[:border,:]
-        x_test = x[border:,:]
-        y_train = y[:border]
-        y_test = y[border:]
-
-    y_train, encoder = preprocess_labels(y_train)
-
-
-    return x_train, y_train, x_test, y_test, encoder
-
-
-prepare_data_fairness("./data/train.csv")
+fields_list=list()
+fields_list.append("male")
+fields_list.append("female")
+fields_list.append("instlevel1")
+fields_list.append("instlevel2")
+fields_list.append("instlevel3")
+fields_list.append("instlevel4")
+fields_list.append("instlevel5")
+fields_list.append("instlevel6")
+fields_list.append("instlevel7")
+fields_list.append("instlevel8")
+fields_list.append("instlevel9")
+#print(fields_list)
+data_dictionary = prepare_data_fairness("./data/train.csv", fields_list)
+print("--------------------------------------------------------------------------------------------------------------------------------------------------")
+for data in data_dictionary:
+    print(data)
+    print(data_dictionary[data])
+    print("--------------------------------------------------------------------------------------------------------------------------------------------------")
