@@ -50,7 +50,7 @@ python fairness.py ./data/train.csv.py
 
 ## Plot
 
-You can plot the NN hystory by executing the Ipython notebook /plot/plot.ipynb along with /data/train.cvs on Google Colab.
+You can plot the NN history by executing the Ipython notebook /plot/plot.ipynb along with /data/train.cvs on Google Colab.
 
 ## Authors
 
