@@ -23,7 +23,7 @@ python preprocess_raw.py
 You can sample the best HPs :
 
 ```bash
-python sample_hps.py ./data/train.csv.py
+python sample_hps.py ./data/train.csv
 ```
 
 ## Train & Test
@@ -47,6 +47,10 @@ You can get the predictions' frequencies of the classes grouped by some defined 
 ```bash
 python fairness.py ./data/train.csv.py
 ```
+
+## Plot
+
+You can plot the NN hystory by executing the Ipython notebook /plot/plot.ipynb along with /data/train.cvs on Google Colab.
 
 ## Authors
 
