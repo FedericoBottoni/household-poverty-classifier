@@ -52,24 +52,23 @@ def prepare_data_fairness(inp_path, fields_list=[], split_size=0.25, shuffle=Fal
             i+=1
     return data_dictionary
 
-"""
-fields_list=list()
-fields_list.append("male")
-fields_list.append("female")
-fields_list.append("instlevel1")
-fields_list.append("instlevel2")
-fields_list.append("instlevel3")
-fields_list.append("instlevel4")
-fields_list.append("instlevel5")
-fields_list.append("instlevel6")
-fields_list.append("instlevel7")
-fields_list.append("instlevel8")
-fields_list.append("instlevel9")
-#print(fields_list)
-data_dictionary = prepare_data_fairness("./data/train.csv", fields_list)
-print("--------------------------------------------------------------------------------------------------------------------------------------------------")
-for data in data_dictionary:
-    print(data)
-    print(data_dictionary[data])
+def check_flist(inp_path):
+    fields_list=list()
+    fields_list.append("male")
+    fields_list.append("female")
+    fields_list.append("instlevel1")
+    fields_list.append("instlevel2")
+    fields_list.append("instlevel3")
+    fields_list.append("instlevel4")
+    fields_list.append("instlevel5")
+    fields_list.append("instlevel6")
+    fields_list.append("instlevel7")
+    fields_list.append("instlevel8")
+    fields_list.append("instlevel9")
+    #print(fields_list)
+    data_dictionary = prepare_data_fairness(inp_path, fields_list)
     print("--------------------------------------------------------------------------------------------------------------------------------------------------")
-"""
+    for data in data_dictionary:
+        print(data)
+        print(data_dictionary[data])
+        print("--------------------------------------------------------------------------------------------------------------------------------------------------")

@@ -23,7 +23,7 @@ python preprocess_raw.py
 You can sample the best HPs :
 
 ```bash
-python auto_ml.py
+python sample_hps.py ./data/train.csv.py
 ```
 
 ## Train & Test
@@ -38,6 +38,14 @@ You can train the network from data with some features encoded manually and eval
 
 ```bash
 python  nnscore.py ./data/train_enc.csv
+```
+
+## Fairness check
+
+You can get the predictions' frequencies of the classes grouped by some defined feature to check the fairness of the model:
+
+```bash
+python fairness.py ./data/train.csv.py
 ```
 
 ## Authors
