@@ -8,28 +8,6 @@ from keras.utils import np_utils
 from keras.models import Sequential
 from keras.layers import Dense, Activation
 
-
-def shuffle_dataset(xs, ys):
-    idx = np.random.permutation(xs.shape[0])
-    xs_result, ys_result = xs[idx], ys[idx]
-    return xs_result, ys_result
-
-def preprocess_data(x, scaler=None):
-    if not scaler:
-        scaler = StandardScaler()
-        scaler.fit(x)
-    x = scaler.transform(x)
-    return x, scaler
-
-def preprocess_labels(labels, encoder=None, categorical=True):
-    if not encoder:
-        encoder = LabelEncoder()
-        encoder.fit(labels)
-    y = encoder.transform(labels)
-    if categorical:
-        y = np_utils.to_categorical(y, num_classes=4)
-    return y, encoder
-
 def prepare_data_fairness(inp_path, fields_list=[], split_size=0.25, shuffle=False):
     
     x = list()
@@ -60,7 +38,6 @@ def prepare_data_fairness(inp_path, fields_list=[], split_size=0.25, shuffle=Fal
             if(row[index.astype(int)].astype(int)==1):
                 data_distribution[i]+=1
                 data_dictionary[fields_list[i]]["count"]+=1
-
                 if(row[y_index].astype(int)==1):
                     data_dictionary[fields_list[i]]["extreme_poverty_count"]+=1
                 else:
