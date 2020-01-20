@@ -4,3 +4,4 @@ pandas
 pyGPGO
 keras
 tensorflow
+imblearn

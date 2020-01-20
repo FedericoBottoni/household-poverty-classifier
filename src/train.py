@@ -115,15 +115,10 @@ def evaluate_acc(x_train, y_train, x_test, y_test, encoder=None):
     return accuracy_score(labels, y_test)
 
 def score(inp_path):
-<<<<<<< HEAD
     n_epochs = 20
-    x_train, y_train, x_test, y_test, _ = prepare_data(inp_path, split_size=0.1, shuffle=True)
-    model, network_history = train(x_train, y_train, x_test, y_test, n_epochs=n_epochs)
-=======
-
     x_train, y_train, x_test, y_test, _ = prepare_data(inp_path, split_size=0.1, shuffle=True, oversize=True, target_ratio=0.8)
-    model = train(x_train, y_train, x_test, y_test)
->>>>>>> 6ba75c05edabb4d33d603b55fc378a36067446d7
+    model, network_history = train(x_train, y_train, x_test, y_test, n_epochs=n_epochs)
+
     model.summary()
     plot_history(network_history, n_epochs)
 
@@ -136,10 +131,5 @@ def score(inp_path):
     
 
 def leave1out_cv_score(inp_path):
-<<<<<<< HEAD
-    xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True)
-    return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=200, verbose=True)
-=======
     xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True, oversize=True, target_ratio=0.8)
-    return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=100, verbose=False)
->>>>>>> 6ba75c05edabb4d33d603b55fc378a36067446d7
+    return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=100, verbose=True)
