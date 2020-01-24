@@ -10,22 +10,7 @@ from keras.utils import np_utils
 from keras.models import Sequential
 from keras.optimizers import Adam
 from keras.layers import Dense, Activation, Dropout
-
-def preprocess_data(x, scaler=None):
-    if not scaler:
-        scaler = StandardScaler()
-        scaler.fit(x)
-    x = scaler.transform(x)
-    return x, scaler
-
-def preprocess_labels(labels, encoder=None, categorical=True):
-    if not encoder:
-        encoder = LabelEncoder()
-        encoder.fit(labels)
-    y = encoder.transform(labels)
-    if categorical:
-        y = np_utils.to_categorical(y, num_classes=4)
-    return y, encoder
+from train import preprocess_data, preprocess_labels, train
 
 def prepare_data(inp_path, split_size=0.25, target_ratio=0.8):
     x = list()
@@ -78,79 +63,60 @@ def prepare_data(inp_path, split_size=0.25, target_ratio=0.8):
 
     return x_train, y_train, x_test, y_test, encoder, target_list, x_test_fair
 
-def train(x_train, y_train, x_test, y_test, n_epochs=20, verbose=1):
 
-    dims = x_train.shape[1]
-    nb_classes = y_train.shape[1]
+def model_fairness(inp_path):
+    print("Model fairness after the gender swap")
+    x_train, y_train, x_test, y_test, _, target_list, x_test_fair = prepare_data(inp_path)
 
-    model = Sequential()
-    model.add(Dense(256, input_shape=(dims,), activation = "relu"))
-    model.add(Dropout(0.2))
-    model.add(Dense(160, activation = "relu"))
-    model.add(Dropout(0.2))
-    model.add(Dense(216, activation = "relu"))
-    model.add(Dense(nb_classes, activation = "softmax"))
+    model, _ = train(x_train, y_train, x_test, y_test, verbose=0)
+    labels=model.predict_classes(x_test, batch_size=32, verbose=0)
+    c=0
+    for l in labels:
+        target_list[c]["predicted_targed"]=l
+        c+=1
 
-    model.compile(optimizer=Adam(learning_rate=0.002090922710075333, beta_1=0.9199471584216276, beta_2=0.9788631577850126),
-        loss='categorical_crossentropy', metrics=['accuracy'])
-
-
-    network_history = model.fit(x_train, y_train, batch_size=32, epochs=n_epochs, verbose=verbose, validation_split=0.2)
-    return model, network_history
+    labels=model.predict_classes(x_test_fair, batch_size=32, verbose=0)
+    c=0
+    for l in labels:
+        target_list[c]["fair_target"]=l
+        c+=1
 
 
-x_train, y_train, x_test, y_test, encoder, target_list, x_test_fair = prepare_data("./data/train.csv")
+    male_up=0
+    male_down=0
+    male_fair=0
+    female_up=0
+    female_down=0
+    female_fair=0
 
-model, network_history = train(x_train, y_train, x_test, y_test)
-labels=model.predict_classes(x_test, batch_size=32, verbose=1)
-c=0
-for l in labels:
-    target_list[c]["predicted_targed"]=l
-    c+=1
-
-labels=model.predict_classes(x_test_fair, batch_size=32, verbose=1)
-c=0
-for l in labels:
-    target_list[c]["fair_target"]=l
-    c+=1
-
-
-male_up=0
-male_down=0
-male_fair=0
-female_up=0
-female_down=0
-female_fair=0
-
-for e in target_list:
-    if(e["gender"]==1):
-        if(e["predicted_targed"]<e["fair_target"]):
-            male_up+=1
-        else:
-            if(e["predicted_targed"]>e["fair_target"]):
-                male_down+=1
+    for e in target_list:
+        if(e["gender"]==1):
+            if(e["predicted_targed"]<e["fair_target"]):
+                male_up+=1
             else:
-                male_fair+=1
-    else:
-        if(e["predicted_targed"]<e["fair_target"]):
-            female_up+=1
+                if(e["predicted_targed"]>e["fair_target"]):
+                    male_down+=1
+                else:
+                    male_fair+=1
         else:
-            if(e["predicted_targed"]>e["fair_target"]):
-                female_down+=1
+            if(e["predicted_targed"]<e["fair_target"]):
+                female_up+=1
             else:
-                female_fair+=1
-
-print("--------------------")
-print("Male who increased:")
-print(male_up)
-print("Male who decreased:")
-print(male_down)
-print("Male fair")
-print(male_fair)
-print("--------------------")
-print("Female who increased:")
-print(female_up)
-print("Female who decreased:")
-print(female_down)
-print("Female fair")
-print(female_fair)
+                if(e["predicted_targed"]>e["fair_target"]):
+                    female_down+=1
+                else:
+                    female_fair+=1
+    print("--------------------")
+    print("Male who increased:")
+    print(male_up)
+    print("Male who decreased:")
+    print(male_down)
+    print("Male fair")
+    print(male_fair)
+    print("--------------------")
+    print("Female who increased:")
+    print(female_up)
+    print("Female who decreased:")
+    print(female_down)
+    print("Female fair")
+    print(female_fair)

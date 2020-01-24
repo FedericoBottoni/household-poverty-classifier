@@ -5,3 +5,4 @@ pyGPGO
 keras
 tensorflow
 imblearn
+fairsearchdeltr
