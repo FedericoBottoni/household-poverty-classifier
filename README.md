@@ -31,13 +31,13 @@ python sample_hps.py ./data/train.csv
 You can train the network and evaluate the metrics :
 
 ```bash
-python  nnscore.py ./data/train.csv
+python nnscore.py ./data/train.csv
 ```
 
 You can train the network from data with some features encoded manually and evaluate the metrics :
 
 ```bash
-python  nnscore.py ./data/train_enc.csv
+python nnscore.py ./data/train_enc.csv
 ```
 
 ## Fairness check

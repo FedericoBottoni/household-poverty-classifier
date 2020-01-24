@@ -132,4 +132,4 @@ def score(inp_path):
 
 def leave1out_cv_score(inp_path):
     xs, ys, _, _, encoder = prepare_data(inp_path, split_size=1, shuffle=True, oversize=True, target_ratio=0.8)
-    return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=100, verbose=True)
+    return leave1out_cv(xs, ys, partial(evaluate_acc, encoder=encoder), iter=1000, verbose=True)

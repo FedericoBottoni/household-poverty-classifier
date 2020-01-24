@@ -2,7 +2,6 @@ scikit-learn
 numpy
 pandas
 pyGPGO
-keras
 tensorflow
+keras
 imblearn
-fairsearchdeltr
