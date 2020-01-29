@@ -2,6 +2,8 @@
 
 > The project is an implementation for solve the Costa Rican household poverty level prediction. This is an implementation for the [Kaggle project](https://www.kaggle.com/c/costa-rican-household-poverty-prediction)
 
+More informations are available in [report.pdf](https://github.com/FedericoBottoni/household-poverty-classifier/blob/master/report.pdf)
+
 ## Requirements
 
 You can install the dependencies using pip:
@@ -67,3 +69,4 @@ You can plot the NN history by executing the Ipython notebook /plot/plot.ipynb a
 - [github/riccardocapra](https://github.com/riccardocapra)
 
 ## License
+Source code is licensed under the [MIT License](https://github.com/FedericoBottoni/household-poverty-classifier/blob/master/LICENSE).
