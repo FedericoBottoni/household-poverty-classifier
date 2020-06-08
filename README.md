@@ -56,17 +56,15 @@ You can plot the NN history by executing the Ipython notebook /plot/plot.ipynb a
 
 ## Authors
 
-**Mattia Artifoni**
+<a href="https://github.com/FedericoBottoni/household-poverty-classifier/graphs/contributors">
+  <img src="https://contributors-img.web.app/image?repo=FedericoBottoni/household-poverty-classifier" />
+</a>
 
-- [github/m-artifoni](https://github.com/m-artifoni)
+* **Federico Bottoni** - [FedericoBottoni](https://github.com/FedericoBottoni)
 
-**Federico Bottoni**
+* **Mattia Artifoni** - [m-artifoni](https://github.com/m-artifoni)
 
-- [github/FedericoBottoni](https://github.com/federicobottoni)
-
-**Riccardo Capra**
-
-- [github/riccardocapra](https://github.com/riccardocapra)
+* **Riccardo Capra** - [riccardocapra](https://github.com/riccardocapra)
 
 ## License
 Source code is licensed under the [MIT License](https://github.com/FedericoBottoni/household-poverty-classifier/blob/master/LICENSE).
